@@ -1,0 +1,43 @@
+# SQLite 데이터베이스
+*.sqlite3
+*.sqlite3-journal
+
+# 로컬 설정
+local_settings.py
+
+# PyCharm 폴더
+../.idea
+
+# 디버깅 파일 (__pycache__, *.pyc, *.pyo, 등)
+__pycache__/
+*.pyc
+*.pyo
+
+# 가상 환경
+venv/
+myenv/
+.virtualenvs/
+
+# 다른 로컬 빌드 및 설정 폴더
+node_modules/
+staticfiles/
+static/
+media/
+
+# 배포 중 세부 사항
+.Python
+
+# Rel.env.se파일 (환경 변수에 중요한 정보와 키를 저장하기 때문에)
+.env
+.env.se
+
+# 일반적인 파이썬 생산 빌드와 소스 파일 무시
+*.egg-info/
+*.eggs/
+*.o
+*.so
+*.wheel
+
+# 마이그레이션 디렉토리
+# 보안상 마이그레이션을 공개로 공유하지 않아야 하는 경우에 추가하세요.
+# migrations/
