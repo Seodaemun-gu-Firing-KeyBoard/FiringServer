@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>지도</title>
+</head>
+
+<body>
+  <h1>네이버 지도API</h1>
+  <form id="addressForm">
+    <input type="text" id="addressInput" placeholder="주소를 입력하세요">
+    <button type="submit">검색</button>
+  </form>
+  <div id="map" style="width: 500px; height: 400px;"></div>
+
+  <script type="text/javascript"
+    src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=2lhimp3vcd&submodules=geocoder"></script>
+  <script>
+    const form = document.getElementById('addressForm');
+    const addressInput = document.getElementById('addressInput');
+    const mapOptions = {
+      center: new naver.maps.LatLng(37.580541, 126.922365),
+      zoom: 17,
+      mapTypeControl: true,
+      zoomControl: true,
+      scaleControl: true,
+      mapDataControl: true,
+    };
+
+    var map = new naver.maps.Map('map', mapOptions);
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const address = addressInput.value;
+      if (address.trim() === '') {
+        alert('주소를 입력하세요.');
+        return;
+      }
+      searchAddress(address);
+    });
+
+    function searchAddress(address) {
+
+      naver.maps.Service.geocode({
+        query: address
+      }, function (status, response) {
+        if (status === naver.maps.Service.Status.ERROR) {
+          alert('주소 검색 실패: ' + response.message);
+          return;
+        }
+        if (response.v2.meta.totalCount === 0) {
+          alert('검색 결과가 없습니다.');
+          return;
+        }
+
+        const result = response.v2.addresses[0];
+        const point = new naver.maps.Point(result.x, result.y);
+        const marker = new naver.maps.Marker({
+          position: point,
+          map: map,
+        });
+
+        map.setCenter(point);
+        map.setZoom(16); // 검색된 위치로 지도 확대
+      })
+    }
+  </script>
+</body>
+
+</html>
