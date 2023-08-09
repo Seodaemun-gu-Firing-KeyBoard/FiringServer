@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
-from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -50,8 +49,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao',
     # swagger
-
     'drf_yasg',
 ]
 
@@ -134,11 +133,9 @@ EMAIL_HOST = 'smtp.gmail.com'  # 메일 호스트 서버
 
 EMAIL_PORT = '587'  # gmail과 통신하는 포트
 
-# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")  # 발신할 이메일
-EMAIL_HOST_USER = "firingkeyboard@gmail.com"
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")  # 발신할 이메일
 
-# EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")  # 발신할 메일의 비밀번호
-EMAIL_HOST_PASSWORD = "pseooizlhyyqcarq"
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")  # 발신할 메일의 비밀번호
 
 EMAIL_USE_TLS = True  # TLS 보안 방법
 
