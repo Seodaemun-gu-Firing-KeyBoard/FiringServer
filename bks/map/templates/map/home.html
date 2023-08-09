@@ -26,6 +26,9 @@
   <div id="map2" style="width: 500px; height: 400px;"></div>
   <div id="routeInfo"></div>
 
+  <h1>입력한 데이터 지도에 정보 띄우기</h1>
+  <div id="map3" style="width: 500px; height: 400px;"></div>
+
   <script type="text/javascript"
     src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=2lhimp3vcd&submodules=geocoder,directions"></script>
   <script>
@@ -36,7 +39,6 @@
     const startInput = document.getElementById('startInput');
     const endInput = document.getElementById('endInput');
 
-    //현재위치 안됨
     const currentLocationButton = document.getElementById('currentLocationButton');
 
     const mapOptions = {
@@ -87,28 +89,27 @@
 
 
       })
-
-      //현재 위치 안됨
-      currentLocationButton.addEventListener('click', function () {
-        if ("geolocation" in navigator) {
-          navigator.geolocation.getCurrentPosition(function (position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            const currentPosition = new naver.maps.LatLng(lat, lng);
-            const marker = new naver.maps.Marker({
-              position: currentPosition,
-              map: map,
-            });
-            map.setCenter(currentPosition);
-            map.setZoom(17);
-          }, function (error) {
-            alert('현재 위치를 가져올 수 없습니다.');
-          });
-        } else {
-          alert('브라우저가 위치 정보를 지원하지 않습니다.');
-        }
-      });
     }
+
+    currentLocationButton.addEventListener('click', function () {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const currentPosition = new naver.maps.LatLng(lat, lng);
+          const marker = new naver.maps.Marker({
+            position: currentPosition,
+            map: map,
+          });
+          map.setCenter(currentPosition);
+          map.setZoom(17);
+        }, function (error) {
+          alert('현재 위치를 가져올 수 없습니다.');
+        });
+      } else {
+        alert('브라우저가 위치 정보를 지원하지 않습니다.');
+      }
+    });
 
     routeform.addEventListener('submit', function (event) {
       event.preventDefault();
@@ -178,6 +179,12 @@
         });
       });
     }
+
+
+    //[[[3번째 지도]]]
+    var map3 = new naver.maps.Map('map3', mapOptions)
+
+    fo
   </script>
 </body>
 
