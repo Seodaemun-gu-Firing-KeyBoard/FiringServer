@@ -9,13 +9,34 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 from dj_rest_auth.registration.views import SocialLoginView
-from .models import User
+from .models import CustomUser as User
 from allauth.socialaccount.providers.kakao import views as kakao_view
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+
+from rest_framework import generics
+from allauth.account.utils import send_email_confirmation
+from .serializers import CustomUserSerializer
 
 BASE_URL = 'http://localhost:8000/'
 KAKAO_CALLBACK_URI = BASE_URL + 'api/auth/kakao/callback/'
 
+
+class RegisterView(generics.CreateAPIView):
+    serializer_class = CustomUserSerializer
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        send_email_confirmation(self.request, user)
+
+    def create(self, request, *args, **kwargs):
+        response = super(RegisterView, self).create(request, *args, **kwargs)
+        if response.status_code == status.HTTP_201_CREATED:
+            response.data = {
+                "message": "이메일 전송을 완료했습니다. 이메일을 확인해주세요."
+            }
+        return response
+        
 def kakao_login(request):
     client_id = os.environ.get("SOCIAL_AUTH_KAKAO_CLIENT_ID")
     return redirect(

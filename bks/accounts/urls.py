@@ -1,11 +1,11 @@
 from dj_rest_auth.registration.views import VerifyEmailView
 from django.urls import path, include, re_path
-
+from .views import RegisterView
 from .views import ConfirmEmailView, kakao_login, kakao_callback, KakaoLogin
 
 urlpatterns = [
     path("", include("dj_rest_auth.urls")),
-    path("signup/", include("dj_rest_auth.registration.urls")),
+    path('signup/', RegisterView.as_view(), name='signup'),
 
     # 유효한 이메일이 유저에게 전달
     re_path(r'^account-confirm-email/$', VerifyEmailView.as_view(), name='account_email_verification_sent'),

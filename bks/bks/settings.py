@@ -117,15 +117,9 @@ SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
-
-    'JTI_CLAIM': 'jti',
-
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 ROOT_URLCONF = 'bks.urls'
 
@@ -150,7 +144,7 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'  # 사이트와 관련한 자동응답을 받을 이메일 주소,'webmaster@localhost'
 
-ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1  #이메일 확인 링크를 1일 후에 만료되도록 설정합니다.
 
 # 이메일에 자동으로 표시되는 사이트 정보
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[Public Reservation]"
