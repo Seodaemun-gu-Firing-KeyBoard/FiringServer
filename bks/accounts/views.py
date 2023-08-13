@@ -12,7 +12,10 @@ from dj_rest_auth.registration.views import SocialLoginView
 from .models import CustomUser as User
 from allauth.socialaccount.providers.kakao import views as kakao_view
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from django.contrib.auth import get_user_model
 from rest_framework import generics
 from allauth.account.utils import send_email_confirmation
 from .serializers import CustomUserSerializer
@@ -20,7 +23,29 @@ from .serializers import CustomUserSerializer
 BASE_URL = 'http://localhost:8000/'
 KAKAO_CALLBACK_URI = BASE_URL + 'api/auth/kakao/callback/'
 
+# 액세스,리프레쉬 토큰 재발급
+class CustomTokenRefreshSerializer(TokenRefreshSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
 
+        # 현재 리프레쉬 토큰에서 사용자 정보 가져오기
+        current_refresh_token = RefreshToken(attrs['refresh'])
+        user_id = current_refresh_token["user_id"]
+
+        # User 객체 찾기
+        User = get_user_model()
+        current_user = User.objects.get(pk=user_id)
+
+        # 새로운 리프레쉬 토큰 생성 및 추가
+        new_refresh_token = RefreshToken.for_user(current_user)
+        data['refresh'] = str(new_refresh_token)
+
+        return data
+
+class CustomTokenRefreshView(TokenRefreshView):
+    serializer_class = CustomTokenRefreshSerializer
+
+# 회원가입
 class RegisterView(generics.CreateAPIView):
     serializer_class = CustomUserSerializer
     permission_classes = [AllowAny]
