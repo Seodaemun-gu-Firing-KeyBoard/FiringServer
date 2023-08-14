@@ -18,17 +18,31 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from django.contrib.auth import get_user_model
 from rest_framework import generics
 from allauth.account.utils import send_email_confirmation
-from .serializers import CustomUserSerializer,CustomUserDetailsSerializer
+from .serializers import CustomUserSerializer, CustomUserDetailsSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 BASE_URL = 'http://localhost:8000/'
 KAKAO_CALLBACK_URI = BASE_URL + 'api/auth/kakao/callback/'
 
-class CustomUserDetail(generics.RetrieveUpdateAPIView):
+# 회원 탈퇴
+class CustomDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        user = request.user
+        user.delete()
+        return Response({"message": "회원 탈퇴가 완료되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+
+
+# 회원 정보 조회, 수정
+class CustomUserDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = CustomUserDetailsSerializer
     queryset = CustomUser.objects.all()
 
     def get_object(self):
         return self.request.user
+
 
 # 액세스,리프레쉬 토큰 재발급
 class CustomTokenRefreshSerializer(TokenRefreshSerializer):
@@ -49,8 +63,10 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
 
         return data
 
+
 class CustomTokenRefreshView(TokenRefreshView):
     serializer_class = CustomTokenRefreshSerializer
+
 
 # 회원가입
 class RegisterView(generics.CreateAPIView):
@@ -68,7 +84,8 @@ class RegisterView(generics.CreateAPIView):
                 "message": "이메일 전송을 완료했습니다. 이메일을 확인해주세요."
             }
         return response
-        
+
+
 def kakao_login(request):
     client_id = os.environ.get("SOCIAL_AUTH_KAKAO_CLIENT_ID")
     return redirect(
