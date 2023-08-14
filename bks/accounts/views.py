@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 from dj_rest_auth.registration.views import SocialLoginView
-from .models import CustomUser as User
+from .models import CustomUser
 from allauth.socialaccount.providers.kakao import views as kakao_view
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -18,10 +18,17 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from django.contrib.auth import get_user_model
 from rest_framework import generics
 from allauth.account.utils import send_email_confirmation
-from .serializers import CustomUserSerializer
+from .serializers import CustomUserSerializer,CustomUserDetailsSerializer
 
 BASE_URL = 'http://localhost:8000/'
 KAKAO_CALLBACK_URI = BASE_URL + 'api/auth/kakao/callback/'
+
+class CustomUserDetail(generics.RetrieveUpdateAPIView):
+    serializer_class = CustomUserDetailsSerializer
+    queryset = CustomUser.objects.all()
+
+    def get_object(self):
+        return self.request.user
 
 # 액세스,리프레쉬 토큰 재발급
 class CustomTokenRefreshSerializer(TokenRefreshSerializer):
@@ -32,9 +39,9 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         current_refresh_token = RefreshToken(attrs['refresh'])
         user_id = current_refresh_token["user_id"]
 
-        # User 객체 찾기
-        User = get_user_model()
-        current_user = User.objects.get(pk=user_id)
+        # CustomUser 객체 찾기
+        CustomUser = get_user_model()
+        current_user = CustomUser.objects.get(pk=user_id)
 
         # 새로운 리프레쉬 토큰 생성 및 추가
         new_refresh_token = RefreshToken.for_user(current_user)
@@ -102,7 +109,7 @@ def kakao_callback(request):
         # 3. 전달받은 이메일, access_token, code를 바탕으로 회원가입/로그인
         try:
             # 전달받은 이메일로 등록된 유저가 있는지 탐색
-            user = User.objects.get(email=email)
+            user = CustomUser.objects.get(email=email)
 
             # FK로 연결되어 있는 socialaccount 테이블에서 해당 이메일의 유저가 있는지 확인
             social_user = SocialAccount.objects.get(user=user)
@@ -122,7 +129,7 @@ def kakao_callback(request):
             accept_json.pop('user', None)
             return JsonResponse(accept_json)
 
-        except User.DoesNotExist:
+        except CustomUser.DoesNotExist:
             # 전달받은 이메일로 기존에 가입된 유저가 아예 없으면 => 새로 회원가입 & 해당 유저의 jwt 발급
             data = {'access_token': access_token, 'code': code}
             accept = requests.post(f"{BASE_URL}api/auth/kakao/login/finish/", data=data)

@@ -2,10 +2,12 @@ from dj_rest_auth.registration.views import VerifyEmailView
 from django.urls import path, include, re_path
 from .views import RegisterView
 from .views import ConfirmEmailView, kakao_login, kakao_callback, KakaoLogin
-from .views import CustomTokenRefreshView
+from .views import CustomTokenRefreshView, CustomUserDetail
 
 urlpatterns = [
     path("", include("dj_rest_auth.urls")),
+    path('user', CustomUserDetail.as_view(), name='custom-user-detail'),
+
     # access token,refresh token 재발급
     path('token/refresh', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('signup', RegisterView.as_view(), name='signup'),
