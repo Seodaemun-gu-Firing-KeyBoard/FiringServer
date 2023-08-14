@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>시설 띄우기</title>
+</head>
+
+<body>
+  <h1>지도-시설 연결</h1>
+  <div id="map3" style="width: 100%; height: 500px;"></div>
+  <script type="text/javascript"
+    src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=2lhimp3vcd&submodules=geocoder"></script>
+  <script>
+    const mapOptions = {
+      center: new naver.maps.LatLng(37.580541, 126.922365),
+      zoom: 17,
+      mapTypeControl: true,
+      zoomControl: true,
+      scaleControl: true,
+      mapDataControl: true,
+    };
+
+    var map = new naver.maps.Map('map', mapOptions);
+
+    fetch('/map/facility_address/')
+      .then(response => response.json())
+      .then(data => {
+        data.addresses.forEach(address => {
+          naver.maps.Service.geocode({
+            query: address
+          }, function (status, response) {
+            if (status === naver.maps.Service.Status.ERROR) {
+              console.log('주소 검색 실패: ' + response.message);
+              return;
+            }
+            if (response.v2.meta.totalCount === 0) {
+              console.log('검색 결과가 없습니다.');
+              return;
+            }
+
+            const result = response.v2.addresses[0];
+            const point = new naver.maps.Point(result.x, result.y);
+            const marker = new naver.maps.Marker({
+              position: point,
+              map: map,
+            });
+          });
+        });
+      })
+      .catch(error => {
+        console.error('주소 목록 가져오기 실패:', error);
+      });
+  </script>
+</body>
+
+</html>
