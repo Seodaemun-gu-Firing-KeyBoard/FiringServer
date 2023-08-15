@@ -117,10 +117,13 @@ class ConfirmEmailView(APIView):
         return qs
 
 
-def kakao_login(request):
-    client_id = os.environ.get("SOCIAL_AUTH_KAKAO_CLIENT_ID")
-    return redirect(
-        f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={KAKAO_CALLBACK_URI}&response_type=code&scope=account_email,profile_nickname")
+class KakaoLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        client_id = os.environ.get("SOCIAL_AUTH_KAKAO_CLIENT_ID")
+        return redirect(
+            f"https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={KAKAO_CALLBACK_URI}&response_type=code&scope=account_email,profile_nickname")
 
 
 def kakao_callback(request):
@@ -210,10 +213,13 @@ class KakaoLogin(SocialLoginView):
     client_class = OAuth2Client
 
 
-def naver_login(request):
-    client_id = os.environ.get("SOCIAL_AUTH_NAVER_CLIENT_ID")
-    return redirect(
-        f"https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id={client_id}&state=STATE_STRING&redirect_uri={NAVER_CALLBACK_URI}")
+class NaverLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        client_id = os.environ.get("SOCIAL_AUTH_NAVER_CLIENT_ID")
+        return redirect(
+            f"https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id={client_id}&state=STATE_STRING&redirect_uri={NAVER_CALLBACK_URI}")
 
 
 def naver_callback(request):
