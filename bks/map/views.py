@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from .serializers import *
-from .forms import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,8 +8,12 @@ from django.http import HttpResponse
 import requests
 from bs4 import BeautifulSoup
 
+#지도 - 검색, 현재위치, 목적지까지 경로확인
+def map(request):
+    return render(request, 'map/map.html')
+
 #시설들 크롤링하는 APIView
-class FacilityAPIView(APIView):
+class CrawlAPIView(APIView):
     def get(self, request):
         code_mapping = {
             100: {
@@ -143,13 +146,8 @@ class FacilityAPIView(APIView):
         serializer = FacilitySerializer(results, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-#시설들 주소 빼오는 APIView
-# class FacilityAddressAPIView(APIView):
-#     def get(self, request):
-#         facilities = Facility.objects.all()
-#         addresses = [facility.address for facility in facilities]
-#         return Response({'addresses':addresses})
-class FacilityAddressAPIView(APIView):
+#시설들 전체보기
+class FacilityAPIView(APIView):
     def get(self, request):
         facilities = Facility.objects.all()
         serializer = FacilitySerializer(facilities, many = True)
@@ -164,8 +162,3 @@ class FacilityDetailAPIView(APIView):
             return Response(facility_serializer.data, status=status.HTTP_200_OK)
         except Facility.DoesNotExist:
             return Response({"message": "시설을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
-
-def home(request):
-    return render(request, 'map/home.html')
-def test(request):
-    return render(request, 'map/facility.html')

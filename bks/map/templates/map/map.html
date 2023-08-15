@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+
+  <h1>네이버 지도API</h1>
+  <form id="addressForm">
+    <input type="text" id="addressInput" placeholder="주소를 입력하세요">
+    <button type="submit">검색</button>
+  </form>
+  <button id="currentLocationButton">현재 위치 보기</button>
+  <div id="map" style="width: 500px; height: 400px;"></div>
+
+  <script type="text/javascript"
+    src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=2lhimp3vcd&submodules=geocoder"></script>
+  <script>
+    //지도1(현재위치 및 위치검색 지도) html가져오기
+    const form = document.getElementById('addressForm');
+    const addressInput = document.getElementById('addressInput');
+    const currentLocationButton = document.getElementById('currentLocationButton');
+
+    //지도설정
+    const mapOptions = {
+      //초기위치
+      center: new naver.maps.LatLng(37.580541, 126.922365),
+      zoom: 13,
+      mapTypeControl: true,
+      zoomControl: true,
+      scaleControl: true,
+      mapDataControl: true,
+    };
+
+    //map - 현재위치,위치검색 지도 
+    const map = new naver.maps.Map('map', mapOptions);
+
+    //map - 정보창
+    const infoWindow = new naver.maps.InfoWindow();
+
+    //mop - 주소입력값가져오기
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const address = addressInput.value;
+      if (address.trim() === '') {
+        alert('주소를 입력해주세요.');
+        return;
+      }
+      searchAddress(address);
+    });
+
+    //map - 주소찾기 및 이동
+    function searchAddress(address) {
+      naver.maps.Service.geocode({
+        query: address
+      }, function (status, response) {
+        if (status === naver.maps.Service.Status.ERROR) {
+          alert('주소 검색 실패: ' + response.message);
+          return;
+        }
+        if (response.v2.meta.totalCount === 0) {
+          alert('검색 결과가 없습니다.');
+          return;
+        }
+
+        const result = response.v2.addresses[0];
+        const point = new naver.maps.Point(result.x, result.y);
+        const marker = new naver.maps.Marker({
+          position: point,
+          map: map,
+        });
+
+        map.setCenter(point);
+        map.setZoom(13);
+      })
+    }
+
+    //map - 현재위치
+    currentLocationButton.addEventListener('click', function () {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const currentPosition = new naver.maps.LatLng(lat, lng);
+          const marker = new naver.maps.Marker({
+            position: currentPosition,
+            map: map,
+          });
+          map.setCenter(currentPosition);
+          map.setZoom(13);
+        }, function (error) {
+          alert('현재 위치를 가져올 수 없습니다.');
+        });
+      } else {
+        alert('브라우저가 위치 정보를 지원하지 않습니다.');
+      }
+    });
+
+    //map - 시설들 지도에 띄우기
+    fetch('/map/facility/')
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(facility => {
+          const address = facility.address;
+          naver.maps.Service.geocode({
+            query: address
+          }, function (status, response) {
+            if (status === naver.maps.Service.Status.ERROR) {
+              console.log('주소 검색 실패: ' + response.message);
+              return;
+            }
+            if (response.v2.meta.totalCount === 0) {
+              console.log('검색 결과가 없습니다.');
+              return;
+            }
+
+            const result = response.v2.addresses[0];
+            const point = new naver.maps.Point(result.x, result.y);
+            const marker = new naver.maps.Marker({
+              position: point,
+              map: map,
+            });
+
+            // 마커 클릭 시 정보창에 시설 이름과 주소 표시
+            naver.maps.Event.addListener(marker, "click", function () {
+              infoWindow.setContent(`
+                <div class="info-window">
+                  <h2>${facility.name}</h2>
+                  <p>${facility.address}</p>
+                  <a href="/map/facility/${facility.id}">상세 정보 보기</a>
+                </div>
+              `);
+              infoWindow.open(map, marker);
+            });
+          });
+        });
+      })
+      .catch(error => {
+        console.error('시설 목록 가져오기 실패:', error);
+      });
+
+  </script>
+</body>
+
+</html>
