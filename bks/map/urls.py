@@ -13,4 +13,5 @@ urlpatterns = [
     path("facility/<int:id>/", views.FacilityDetailAPIView.as_view(), name="facility_detail"),
     path("facilityType/", views.FacilityTypeAPIView.as_view(), name="facilityType"),
     path("facilityDetailType/", views.FacilityDetailTypeAPIView.as_view(), name="facilityDetailType"),
+    path("facilityFee/", views.FacilityFeeAPIView.as_view(), name="facilityFee"),
 ]

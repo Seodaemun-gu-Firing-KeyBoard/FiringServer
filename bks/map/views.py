@@ -187,3 +187,18 @@ class FacilityDetailTypeAPIView(APIView):
         facilities = Facility.objects.filter(typeDetail=type_detail_value)
         serializer = FacilitySerializer(facilities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+#비용별 필터링
+class FacilityFeeAPIView(APIView):
+    def post(self, request):
+        fee = request.data.get("fee_type")
+
+        if fee == "paid":
+            facilities = Facility.objects.filter(fee__icontains="유료")
+        elif fee == "free":
+            facilities = Facility.objects.exclude(fee__icontains="유료")
+        else:
+            return Response({"error": "paid 혹은 free로 fee_type을 작성해주세요"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = FacilitySerializer(facilities, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
