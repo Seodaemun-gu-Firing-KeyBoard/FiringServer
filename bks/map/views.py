@@ -139,16 +139,21 @@ class FacilityAPIView(APIView):
 
                     else:
                         return Response({"message": "실패"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-                
+     
         serializer = FacilitySerializer(results, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 #시설들 주소 빼오는 APIView
+# class FacilityAddressAPIView(APIView):
+#     def get(self, request):
+#         facilities = Facility.objects.all()
+#         addresses = [facility.address for facility in facilities]
+#         return Response({'addresses':addresses})
 class FacilityAddressAPIView(APIView):
     def get(self, request):
         facilities = Facility.objects.all()
-        addresses = [facility.address for facility in facilities]
-        return Response({'addresses':addresses})
+        serializer = FacilitySerializer(facilities, many = True)
+        return Response(serializer.data)
 
 #시설들 각 페이지로 이동하는 APIView
 class FacilityDetailAPIView(APIView):
