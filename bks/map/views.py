@@ -20,50 +20,50 @@ class CrawlAPIView(APIView):
                 "name": "체육시설",
                 "dCode_mapping": {
                     101: "농구장",
-                    # 102: "다목적경기장",
-                    # 103: "배구장",
-                    # 104: "배드민턴장",
-                    # 105: "야구장",
-                    # 106: "족구장",
-                    # 107: "축구장",
-                    # 108: "테니스장",
-                    # 109: "풋살장",
-                    # 115: "골프장",
-                    # 116: "교육시설",
-                    # 117: "수영장",
-                    # 125: "운동장",
-                    # 126: "체육관",
-                    # 127: "탁구장"
+                    102: "다목적경기장",
+                    103: "배구장",
+                    104: "배드민턴장",
+                    105: "야구장",
+                    106: "족구장",
+                    107: "축구장",
+                    108: "테니스장",
+                    109: "풋살장",
+                    115: "골프장",
+                    116: "교육시설",
+                    117: "수영장",
+                    125: "운동장",
+                    126: "체육관",
+                    127: "탁구장"
                 }
             },
             200: {
                 "name": "문화체험",
                 "dCode_mapping": {
-                    # 202: "단체봉사",
-                    # 203: "전시/관람",
-                    # 204: "문화행사",
-                    # 205: "교육체험",
-                    # 206: "농장체험",
-                    # 207: "공원탐방",
-                    # 208: "서울형키즈카페",
-                    # 209: "삼림여가"
+                    202: "단체봉사",
+                    203: "전시/관람",
+                    204: "문화행사",
+                    205: "교육체험",
+                    206: "농장체험",
+                    207: "공원탐방",
+                    208: "서울형키즈카페",
+                    209: "삼림여가"
                 }
             },
             500: {
                 "name": "공간시설",
                 "dCode_mapping": {
-                    # 501: "녹화장소",
-                    # 502: "캠핑장",
-                    # 504: "강당",
-                    # 505: "강의실",
-                    # 506: "다목적실",
-                    # 507: "전시실",
-                    # 508: "주민공유공간",
-                    # 509: "회의실",
-                    # 510: "민원등기타",
-                    # 511: "공연장",
-                    # 513: "광장",
-                    # 514: "청년공간"
+                    501: "녹화장소",
+                    502: "캠핑장",
+                    504: "강당",
+                    505: "강의실",
+                    506: "다목적실",
+                    507: "전시실",
+                    508: "주민공유공간",
+                    509: "회의실",
+                    510: "민원등기타",
+                    511: "공연장",
+                    513: "광장",
+                    514: "청년공간"
                 }
             }
         }
@@ -136,6 +136,9 @@ class CrawlAPIView(APIView):
                                         reserve=dictt.get('예약방법'),
                                         call=dictt.get('문의전화'),
                                         address=dictt.get('주소'),
+                                        type = code,
+                                        typeDetail = dCode,
+                                        siteUrl = detail_url,
                                     )
                                     facility.save()
                                     results.append(facility)
@@ -162,3 +165,25 @@ class FacilityDetailAPIView(APIView):
             return Response(facility_serializer.data, status=status.HTTP_200_OK)
         except Facility.DoesNotExist:
             return Response({"message": "시설을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+
+#시설종류별 필터링
+class FacilityTypeAPIView(APIView):
+    def post(self, request):
+        type_value = request.data.get("type")
+        if type_value is None:
+            return Response({"error": "그런 시설종류는 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        facilities = Facility.objects.filter(type=type_value)
+        serializer = FacilitySerializer(facilities, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+#시설세부종류별 필터링
+class FacilityDetailTypeAPIView(APIView):
+    def post(self, request):
+        type_detail_value = request.data.get("typeDetail")
+        if type_detail_value is None:
+            return Response({"error": "그런 세부시설종류는 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        facilities = Facility.objects.filter(typeDetail=type_detail_value)
+        serializer = FacilitySerializer(facilities, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

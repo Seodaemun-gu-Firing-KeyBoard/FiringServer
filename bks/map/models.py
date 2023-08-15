@@ -15,3 +15,6 @@ class Facility(models.Model):
     reserve = models.TextField(blank=True, null=True)
     call = models.TextField(blank=True, null=True)
     address = models.CharField(max_length=255, null=True)
+    type = models.CharField(max_length=100, null=True)
+    typeDetail = models.CharField(max_length=100, null=True)
+    siteUrl = models.TextField(blank=True, null=True)
