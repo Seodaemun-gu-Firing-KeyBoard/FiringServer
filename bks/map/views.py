@@ -117,7 +117,16 @@ class CrawlAPIView(APIView):
                                         address = address_p.text.strip()
                                         dictt['주소'] = address
 
-                                    
+                                left_box = detail_soup.find('div', class_='left_box')
+                                if left_box:
+                                    img_box = left_box.find('div', class_='img_box')
+                                    if img_box:
+                                        img_tag = img_box.find('img')
+                                        if img_tag:
+                                            img_url = img_tag.get('src')
+                                            full_img_url = "https://yeyak.seoul.go.kr" + img_url
+
+                                            dictt['이미지'] = full_img_url
 
                                 if Facility.objects.filter(name=dictt.get('시설명')).exists():
                                     continue
@@ -139,6 +148,7 @@ class CrawlAPIView(APIView):
                                         type = code,
                                         typeDetail = dCode,
                                         siteUrl = detail_url,
+                                        image = dictt.get('이미지'),
                                     )
                                     facility.save()
                                     results.append(facility)
@@ -217,3 +227,4 @@ class FacilityAddressAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 #가능한 위치 목록
     #강남구,강동구,강북구,강서구,관악구,광진구,구로구,금천구,노원구,도봉구,동대문구,동작구,마포구,서대문구,서초구,성동구,송북구,송파구,양천구,영등포구,용산구,은평구,종로구,중구,중랑구,고양시,과천시,남양주시,하남시,예산군,횡성군,춘천시,완주군,정읍시,포천시,제천시,인천시
+

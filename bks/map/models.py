@@ -18,3 +18,4 @@ class Facility(models.Model):
     type = models.CharField(max_length=100, null=True)
     typeDetail = models.CharField(max_length=100, null=True)
     siteUrl = models.TextField(blank=True, null=True)
+    image =  models.TextField(blank=True, null=True)

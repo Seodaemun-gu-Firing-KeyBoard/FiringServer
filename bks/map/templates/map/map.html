@@ -13,7 +13,7 @@
     <button type="submit">검색</button>
   </form>
   <button id="currentLocationButton">현재 위치 보기</button>
-  <div id="map" style="width: 500px; height: 400px;"></div>
+  <div id="map" style="width: 1000px; height: 1000px;"></div>
 
   <script type="text/javascript"
     src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=2lhimp3vcd&submodules=geocoder"></script>
@@ -127,7 +127,7 @@
             naver.maps.Event.addListener(marker, "click", function () {
               infoWindow.setContent(`
                 <div class="info-window">
-                  <h2>${facility.name}</h2>
+                  <h3>${facility.name}</h3>
                   <p>${facility.address}</p>
                   <a href="/map/facility/${facility.id}">상세 정보 보기</a>
                 </div>
