@@ -202,3 +202,18 @@ class FacilityFeeAPIView(APIView):
         
         serializer = FacilitySerializer(facilities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+#위치 필터링
+class FacilityAddressAPIView(APIView):
+    def post(self, request):
+        location = request.data.get("location")
+        
+        if location:
+            facilities = Facility.objects.filter(address__icontains=location)
+        else:
+            return Response({"error": "해당 위치를 찾을 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = FacilitySerializer(facilities, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+#가능한 위치 목록
+    #강남구,강동구,강북구,강서구,관악구,광진구,구로구,금천구,노원구,도봉구,동대문구,동작구,마포구,서대문구,서초구,성동구,송북구,송파구,양천구,영등포구,용산구,은평구,종로구,중구,중랑구,고양시,과천시,남양주시,하남시,예산군,횡성군,춘천시,완주군,정읍시,포천시,제천시,인천시

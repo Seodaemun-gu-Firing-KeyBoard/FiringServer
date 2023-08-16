@@ -11,7 +11,12 @@ urlpatterns = [
     path("facility/", views.FacilityAPIView.as_view(), name="facility"),
     #시설별로 확인
     path("facility/<int:id>/", views.FacilityDetailAPIView.as_view(), name="facility_detail"),
+    #시설종류별로 확인
     path("facilityType/", views.FacilityTypeAPIView.as_view(), name="facilityType"),
+    #시설세부종류별로 확인
     path("facilityDetailType/", views.FacilityDetailTypeAPIView.as_view(), name="facilityDetailType"),
+    #요금 필터링
     path("facilityFee/", views.FacilityFeeAPIView.as_view(), name="facilityFee"),
+    #위치 필터링
+    path("facilityAddress/", views.FacilityAddressAPIView.as_view(), name="facilityAddress"),
 ]
