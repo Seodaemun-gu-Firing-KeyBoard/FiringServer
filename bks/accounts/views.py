@@ -309,3 +309,17 @@ class NaverLogin(SocialLoginView):
     adapter_class = naver_view.NaverOAuth2Adapter
     callback_url = NAVER_CALLBACK_URI
     client_class = OAuth2Client
+
+class CustomUserDetailView(generics.RetrieveUpdateAPIView):
+    serializer_class = CustomUserDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)

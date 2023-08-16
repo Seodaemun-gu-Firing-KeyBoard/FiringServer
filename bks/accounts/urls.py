@@ -1,10 +1,12 @@
 from dj_rest_auth.registration.views import VerifyEmailView
 from django.urls import path, include, re_path
-from .views import RegisterView
+from .views import RegisterView, CustomUserDetailView
 from .views import ConfirmEmailView, KakaoLoginView, kakao_callback, KakaoLogin, NaverLoginView, naver_callback, NaverLogin
 from .views import CustomTokenRefreshView, CustomUserDetailView, CustomDeleteView
 from dj_rest_auth.views import LoginView
 from rest_framework_simplejwt.views import TokenVerifyView
+
+app_name = 'accounts'
 
 custom_dj_rest_auth_urls = [
     path('login/', LoginView.as_view(), name='rest_login'),
@@ -19,7 +21,9 @@ urlpatterns = [
     path('', include(custom_rest_framework_simplejwt_urls)),
     path('user/', CustomUserDetailView.as_view(), name='custom-user-detail'),
     path('user/delete', CustomDeleteView.as_view(), name='user_delete'),
-
+    path('api/mypage/', CustomUserDetailView.as_view(), name='mypage'),
+    path('mypage/', CustomUserDetailView.as_view(), name='mypage-redirect'),
+    
     # access token,refresh token 재발급
     path('token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('signup/', RegisterView.as_view(), name='signup'),
