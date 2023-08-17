@@ -1,0 +1,88 @@
+{% load account %}
+{% load i18n %}
+
+{% block content %}
+{% autoescape off %}
+{% user_display user as user_display %}
+{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}
+
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="stylesheet" href="email.css">
+    <style type="text/css">
+
+    </style>
+</head>
+
+<body style="background-color: #FAF8F2; margin: 0 !important; padding: 0 !important;">
+<!-- HIDDEN PREHEADER TEXT -->
+<div style="display: none; font-size: 1px; color: #FFFCF8; line-height: 1px; font-family: 'NotoSerifKR', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+    We're thrilled to have you here! Get ready to dive into your new account.
+</div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <!-- LOGO -->
+    <tr>
+        <td bgcolor="#A8426D" align="center">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                <tr>
+                    <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#A8426D" align="center" style="padding: 0px 10px 0px 10px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                <tr>
+                    <td bgcolor="#FFFCF8" align="center" valign="top"
+                        style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'NotoSerifKR', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                        <h1 style="font-size: 36px; font-weight: 400; margin:2px;">안녕하세요, 불타는 키보드입니다.</h1>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#FFFCF8" align="center" style="padding: 0px 10px 0px 10px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                <tr>
+                    <td bgcolor="#FFFCF8" align="left"
+                        style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'NotoSerifKR', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                        <p style="margin: 0;">아래 버튼을 눌러 계정을 인증하고, 로그인해주세요!</p>
+                        <p>귀하의 아이디는 <span style="font-weight:bold;">{{ user_display }}</span>입니다.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td bgcolor="#FFFCF8" align="left">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td bgcolor="#FFFCF8" align="center" style="padding: 20px 30px 60px 30px;">
+                                    <table border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td align="center" style="border-radius: 3px;" bgcolor="#A8426D"><a
+                                                    href="{{ activate_url }}" target="_blank"
+                                                    style="font-size: 20px; font-family: 'NotoSerifKR', Helvetica, Arial, sans-serif; color: #FFFCF8; text-decoration: none; color: #FFFCF8; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #A8426D; display: inline-block;">계정
+                                                인증하기</a></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr> <!-- COPY -->
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+
+</html>
+
+{% endblocktrans %}
+{% endautoescape %}
+{% endblock %}
