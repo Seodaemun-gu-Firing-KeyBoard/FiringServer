@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-k*&_o41$#kzdpfncy3(qmzpnr#a*38w4^6c4shinqil0cp+8*o"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -159,7 +159,7 @@ ACCOUNT_EMAIL_SUBJECT_PREFIX = "[Public Reservation]"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
+        "DIRS": ['clients',
             os.path.join(BASE_DIR, "templates"),
         ],
         "APP_DIRS": True,
@@ -172,6 +172,11 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # 허용할 클라이언트의 출처를 추가하세요.
+    # 더 많은 출처를 허용하려면 여기에 추가하면 됩니다.
 ]
 
 WSGI_APPLICATION = "bks.wsgi.application"
@@ -218,8 +223,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(BASE_DIR)
 
+STATICFILES_DIRS = [
+        # 실제 static 파일은 모두 client 측에서 소유
+        os.path.join(ROOT_DIR, 'client/static')
+    ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
