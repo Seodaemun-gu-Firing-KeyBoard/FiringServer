@@ -47,5 +47,5 @@ urlpatterns = [
     ),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     path("map/", include("map.urls")),
-    path("/", include("review.urls"))
+    path("", include("review.urls"))
 ]
