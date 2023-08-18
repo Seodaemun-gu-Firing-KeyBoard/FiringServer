@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # myapp
     "accounts",
     "map",
+    "review",
     # django-rest-auth
     "rest_framework",
     "rest_framework_simplejwt",
