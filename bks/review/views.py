@@ -1,8 +1,7 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated , AllowAny
-
+from rest_framework.permissions import AllowAny
 from .models import Review
-from .models import Facility
+from map.models import Facility
 from .serializers import ReviewSerializer
 
 class ReviewListCreateAPIView(generics.ListCreateAPIView):
